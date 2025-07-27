@@ -1,0 +1,29 @@
+# Licensed under the Apache License, Version 2.0 or the MIT License.
+# SPDX-License-Identifier: Apache-2.0 OR MIT
+# Copyright Tock Contributors 2025.
+
+[package]
+name = "stm32wl5x"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+
+[dependencies]
+cortexm4 = { path = "../../arch/cortex-m4" }
+enum_primitive = { path = "../../libraries/enum_primitive" }
+kernel = { path = "../../kernel" }
+
+[features]
+# Currently, Tock supports only these chips.
+# When a new chip is added, add its identifier here and inside
+# the chip's crate as a feature for the dependency. See
+# stm32f429zi crate for an example.
+stm32wl55jc = []
+
+# These are unused and unsupported
+stm32wl55cc = []
+stm32wl54cc = []
+stm32wl54jc = []
+
+[lints]
+workspace = true

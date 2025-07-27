@@ -101,6 +101,7 @@ members = [
     "chips/stm32f446re",
     "chips/stm32f412g",
     "chips/stm32f4xx",
+    "chips/stm32wl5x",
     "chips/veer_el2",
     "chips/virtio",
     "kernel",
