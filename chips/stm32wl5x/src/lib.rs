@@ -2,9 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 // Copyright Tock Contributors 2022.
 
-//! Peripheral implementations for the STM32F4xx MCU.
-//!
-//! STM32F446RE: <https://www.st.com/en/microcontrollers/stm32f4.html>
 
 #![no_std]
 
@@ -15,6 +12,7 @@ pub mod chip_specific;
 pub mod dbg;
 pub mod flash;
 pub mod rcc;
+pub mod clocks;
 
 
 use cortexm4f::{initialize_ram_jump_to_main, unhandled_interrupt, CortexM4F, CortexMVariant};

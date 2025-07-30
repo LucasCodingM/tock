@@ -6,54 +6,132 @@ use kernel::utilities::registers::interfaces::{ReadWriteable, Readable};
 use kernel::utilities::registers::{register_bitfields, ReadWrite};
 use kernel::utilities::StaticRef;
 
-/// Reset and clock control
+
+/*The following different clock sources can be used to drive the system clock (SYSCLK):
+• HSI16 (high-speed internal) 16 MHz RC oscillator clock
+• MSI (multi-speed internal) RC oscillator clock from 100 kHz to 48 MHz
+• HSE32 (high-speed external) 32 MHz oscillator clock, with trimming capacitors.
+• PLL clock
+The MSI is used as system clock source after startup from reset, configured at 4 MHz.
+The devices have the following additional clock sources:
+• LSI: 32 kHz low-speed internal RC that may drive the independent watchdog and
+optionally the RTC used for auto-wakeup from Stop and Standby modes.
+• LSE: 32.768 kHz low-speed external crystal that optionally drives the RTC used for
+auto-wakeup from Stop, Standby and Shutdown modes, or the real-time clock
+(RTCCLK).
+Each clock source can be switched on or off independently when it is not used, to optimize
+power consumption.
+Several prescalers can be used to configure the AHB frequencies (HCLK3/PCLK3, HCLK1,
+HCLK2), the high-speed APB2 (PCLK2) and the low-speed APB1 (PCLK1) domains. The
+maximum frequency of the AHB (HCLK3, HCLK1, and HCLK2), the PCLK1 and the PCLK2
+domains is 48 MHz. */
+
+/// Reset and clock control register block.
 #[repr(C)]
 struct RccRegisters {
+    /// Control Register – Enables/disables oscillators (HSI, HSE, MSI, etc.)
     cr: ReadWrite<u32, CR::Register>,
+    /// Internal Clock Sources Calibration Register – Calibrates internal clocks (e.g., MSI, HSI)
     icscr: ReadWrite<u32, ICSCR::Register>,
+    /// Clock Configuration Register – Selects system clock source (SYSCLK), AHB/APB prescalers
     cfgr: ReadWrite<u32, CFGR::Register>,
+    /// PLL Configuration Register – Configures PLL multipliers/dividers (M, N, R, P, Q)
     pllcfgr: ReadWrite<u32, PLLCFGR::Register>,
+    /// Clock Interrupt Enable Register – Enables interrupts for clock events
     cier: ReadWrite<u32, CIER::Register>,
+    /// Clock Interrupt Flag Register – Indicates which clock interrupt has occurred
     cifr: ReadWrite<u32, CIFR::Register>,
+    /// Clock Interrupt Clear Register – Clears clock interrupt flags
     cicr: ReadWrite<u32, CICR::Register>,
+
+    /// Reset peripherals on AHB1 bus
     ahb1rstr: ReadWrite<u32, AHB1RSTR::Register>,
+    /// Reset peripherals on AHB2 bus
     ahb2rstr: ReadWrite<u32, AHB2RSTR::Register>,
+    ///	Reset peripherals on AHB3 bus
     ahb3rstr: ReadWrite<u32, AHB3RSTR::Register>,
+    /// Reset APB1 (part 1) peripherals
     apb1rstr1: ReadWrite<u32, APB1RSTR1::Register>,
+    /// Reset APB1 (part 2) peripherals
     apb1rstr2: ReadWrite<u32, APB1RSTR2::Register>,
+    /// Reset APB2 peripherals
     apb2rstr: ReadWrite<u32, APB2RSTR::Register>,
+    /// Reset APB3 peripherals
     apb3rstr: ReadWrite<u32, APB3RSTR::Register>,
+
+    /// Enable clock for AHB1 peripherals
     ahb1enr: ReadWrite<u32, AHB1ENR::Register>,
+    /// Enable clock for AHB2 peripherals
     ahb2enr: ReadWrite<u32, AHB2ENR::Register>,
+    /// Enable clock for AHB3 peripherals
     ahb3enr: ReadWrite<u32, AHB3ENR::Register>,
+    /// Enable APB1 (part 1) peripheral clocks
     apb1enr1: ReadWrite<u32, APB1ENR1::Register>,
+    /// Enable APB1 (part 2) peripheral clocks
     apb1enr2: ReadWrite<u32, APB1ENR2::Register>,
+    /// Enable APB2 peripheral clocks
     apb2enr: ReadWrite<u32, APB2ENR::Register>,
+    /// Enable APB3 peripheral clocks
     apb3enr: ReadWrite<u32, APB3ENR::Register>,
+
+    /// Keep AHB1 clocks enabled during Sleep
     ahb1smenr: ReadWrite<u32, AHB1SMENR::Register>,
+    /// Same for AHB2 clocks
     ahb2smenr: ReadWrite<u32, AHB2SMENR::Register>,
+    /// Same for AHB3 clocks
     ahb3smenr: ReadWrite<u32, AHB3SMENR::Register>,
+    /// APB1 (part 1) sleep mode clock control
     apb1smenr1: ReadWrite<u32, APB1SMENR1::Register>,
+    /// APB1 (part 2) sleep mode clock control
     apb1smenr2: ReadWrite<u32, APB1SMENR2::Register>,
+    /// APB2 sleep mode clock control
     apb2smenr: ReadWrite<u32, APB2SMENR::Register>,
+    /// APB3 sleep mode clock control
     apb3smenr: ReadWrite<u32, APB3SMENR::Register>,
+
+    /// Clock Configuration Independent Peripherals Register 
+    /// Selects clock sources for specific peripherals (USARTs, ADCs, RNG, etc.)
     ccipr: ReadWrite<u32, CCIPR::Register>,
+
+    /// Backup Domain Control Register – Controls LSE, RTC, backup RAM, and reset
     bdcr: ReadWrite<u32, BDCR::Register>,
+    /// Control and Status Register 
+    /// Flags for resets, IWDG, BOR, etc.
     csr: ReadWrite<u32, CSR::Register>,
+    /// Extended Clock Configuration Register 
+    /// Additional config (e.g., CPU frequency scaling, power saving)
+
+    /// Extended Clock Configuration Register
+    /// Additional config (e.g., CPU frequency scaling, power saving)
     extcfgr: ReadWrite<u32, EXTCFGR::Register>,
+
+    /// AHB1 enable for CPU2
     c2ahb1enr: ReadWrite<u32, C2AHB1ENR::Register>,
+    /// AHB2 enable for CPU2
     c2ahb2enr: ReadWrite<u32, C2AHB2ENR::Register>,
+    /// AHB3 enable for CPU2
     c2ahb3enr: ReadWrite<u32, C2AHB3ENR::Register>,
+    /// APB1 (part 1) enable for CPU2
     c2apb1enr1: ReadWrite<u32, C2APB1ENR1::Register>,
+    /// APB1 (part 2) enable for CPU2
     c2apb1enr2: ReadWrite<u32, C2APB1ENR2::Register>,
-    capb2enr: ReadWrite<u32, C2APB2ENR::Register>,
+    // APB2 enable for CPU2
+    c2apb2enr: ReadWrite<u32, C2APB2ENR::Register>,
+    /// APB3 enable for CPU2
     c2apb3enr: ReadWrite<u32, C2APB3ENR::Register>,
+    /// AHB1 sleep mode enable for CPU2
     c2ahb1smenr: ReadWrite<u32, C2AHB1SMENR::Register>,
+    /// AHB2 sleep mode enable for CPU2
     c2ahb2smenr: ReadWrite<u32, C2AHB2SMENR::Register>,
+    /// AHB3 sleep mode enable for CPU2
     c2ahb3smenr: ReadWrite<u32, C2AHB3SMENR::Register>,
+    /// APB1 (part 1) sleep mode enable for CPU2
     c2apb1smenr1: ReadWrite<u32, C2APB1SMENR1::Register>,
+    /// APB1 (part 2) sleep mode enable for CPU2
     c2apb1smenr2: ReadWrite<u32, C2APB1SMENR2::Register>,
+    /// APB2 sleep mode enable for CPU2
     c2apb2smenr: ReadWrite<u32, C2APB2SMENR::Register>,
+    /// APB3 sleep mode enable for CPU2
     c2apb3smenr: ReadWrite<u32, C2APB3SMENR::Register>,    
 }
 
@@ -63,7 +141,20 @@ register_bitfields![u32,
         MSIRDY OFFSET(1) NUMBITS(1) [],
         MSIPLLEN OFFSET(2) NUMBITS(1) [],
         MSIRGSEL OFFSET(3) NUMBITS(1) [],
-        MSIRANGE OFFSET(4) NUMBITS(4) [],
+        MSIRANGE OFFSET(4) NUMBITS(4) [
+            Range100kHz = 0b0000,
+            Range200kHz = 0b0001,
+            Range400kHz = 0b0010,
+            Range800kHz = 0b0011,
+            Range1MHz   = 0b0100,
+            Range2MHz   = 0b0101,
+            Range4MHz   = 0b0110, // reset value
+            Range8MHz   = 0b0111,
+            Range16MHz  = 0b1000,
+            Range24MHz  = 0b1001,
+            Range32MHz  = 0b1010,
+            Range48MHz  = 0b1011,
+    ],
         HSION OFFSET(8) NUMBITS(1) [],
         HSIKERON OFFSET(9) NUMBITS(1) [],
         HSIRDY OFFSET(10) NUMBITS(1) [],
@@ -84,9 +175,26 @@ register_bitfields![u32,
         HSITRIM OFFSET(24) NUMBITS(8) [],
     ],
     CFGR [
-    MCOPRE OFFSET(28) NUMBITS(3) [],
+    MCOPRE OFFSET(28) NUMBITS(3) [
+        Div1 = 0b000,  // MCO divided by 1
+        Div2 = 0b001,  // MCO divided by 2
+        Div4 = 0b010,  // MCO divided by 4
+        Div8 = 0b011,  // MCO divided by 8
+        Div16= 0b100,  // MCO divided by 16
+    ],
 
-    MCOSEL OFFSET(24) NUMBITS(4) [],
+    MCOSEL OFFSET(24) NUMBITS(4) [
+        Disabled = 0b0000,      // No output on MCO
+        SYSCLK   = 0b0001,      // System clock
+        MSI      = 0b0010,      // MSI clock
+        HSI16    = 0b0011,      // HSI16 internal oscillator
+        HSE32    = 0b0100,      // External HSE clock (32 MHz)
+        PLLR     = 0b0101,      // PLL R output
+        LSI      = 0b0110,      // Low speed internal clock
+        LSE      = 0b1000,      // Low speed external clock
+        PLLP     = 0b1101,      // PLL P output
+        PLLQ     = 0b1110,      // PLL Q output
+],
 
     PPRE2F OFFSET(18) NUMBITS(1) [],
     PPRE1F OFFSET(17) NUMBITS(1) [],
@@ -95,11 +203,37 @@ register_bitfields![u32,
 
     STOPWUCK OFFSET(15) NUMBITS(1) [],
     /// APB high-speed prescaler (APB2)
-    PPRE2 OFFSET(11) NUMBITS(3) [],
+    PPRE2 OFFSET(11) NUMBITS(3) [
+        Div2  = 0b100,  // Divide by 2
+        Div4  = 0b101,  // Divide by 4
+        Div8  = 0b110,  // Divide by 8
+        Div16 = 0b111,  // Divide by 16
+],
     /// APB Low speed prescaler (APB1)
-    PPRE1 OFFSET(8) NUMBITS(3) [],
+    PPRE1 OFFSET(8) NUMBITS(3) [
+        Div2  = 0b100,  // Divide by 2
+        Div4  = 0b101,  // Divide by 4
+        Div8  = 0b110,  // Divide by 8
+        Div16 = 0b111,  // Divide by 16
+    ],
     /// AHB prescaler
-    HIPRE OFFSET(4) NUMBITS(4) [],
+    HPRE OFFSET(4) NUMBITS(4) [
+        Div1    = 0b0000, // SYSCLK not divided (default)
+        Div3    = 0b0001, // SYSCLK divided by 3
+        Div5    = 0b0010, // SYSCLK divided by 5
+        // 0b0011 and 0b0100 reserved or not defined, treated as Div1
+        Div6    = 0b0101, // SYSCLK divided by 6
+        Div10   = 0b0110, // SYSCLK divided by 10
+        Div32   = 0b0111, // SYSCLK divided by 32
+        Div2    = 0b1000, // SYSCLK divided by 2
+        Div4    = 0b1001, // SYSCLK divided by 4
+        Div8    = 0b1010, // SYSCLK divided by 8
+        Div16   = 0b1011, // SYSCLK divided by 16
+        Div64   = 0b1100, // SYSCLK divided by 64
+        Div128  = 0b1101, // SYSCLK divided by 128
+        Div256  = 0b1110, // SYSCLK divided by 256
+        Div512  = 0b1111, // SYSCLK divided by 512
+    ],
     /// System clock switch status
     SWS OFFSET(2) NUMBITS(2) [
         MSI = 0b00,
@@ -132,9 +266,29 @@ register_bitfields![u32,
         ],
 
         PLLQEN OFFSET(24) NUMBITS(1) [],
-        PLLQ OFFSET(25) NUMBITS(3) [],
-        PLLREN OFFSET(28) NUMBITS(1) [],
-        PLLR OFFSET(29) NUMBITS(3) [],           
+        PLLQ OFFSET(25) NUMBITS(3) [
+            Reserved = 0b000, // Reserved
+            Div2     = 0b001, // PLLQ = 2
+            Div3     = 0b010, // PLLQ = 3
+            Div4     = 0b011, // PLLQ = 4
+            Div5     = 0b100, // PLLQ = 5
+            Div6     = 0b101, // PLLQ = 6
+            Div7     = 0b110, // PLLQ = 7
+            Div8     = 0b111, // PLLQ = 8
+        ],
+        PLLREN OFFSET(28) NUMBITS(1) [
+            Disabled = 0, // PLLRCLK output disabled
+            Enabled  = 1, // PLLRCLK output enabled
+        ],
+        PLLR OFFSET(29) NUMBITS(3) [
+            Div2     = 0b001, // PLLR = 2
+            Div3     = 0b010, // PLLR = 3
+            Div4     = 0b011, // PLLR = 4
+            Div5     = 0b100, // PLLR = 5
+            Div6     = 0b101, // PLLR = 6
+            Div7     = 0b110, // PLLR = 7
+            Div8     = 0b111, // PLLR = 8
+        ],           
     ],
     CIER [
         LSIRDYIE OFFSET(0) NUMBITS(1) [],
@@ -419,34 +573,34 @@ register_bitfields![u32,
     ],
     EXTCFGR [
         SHDHPRE OFFSET(0) NUMBITS(4) [
-            DIVIDEDBY2 = 0b1000,
-            DIVIDEDBY3 = 0b0001,
-            DIVIDEDBY4 = 0b1001,
-            DIVIDEDBY5 = 0b0010,
-            DIVIDEDBY6 = 0b0101,
-            DIVIDEDBY8 = 0b1010,
-            DIVIDEDBY10 = 0b0110,
-            DIVIDEDBY16 = 0b1011,           
-            DIVIDEDBY32 = 0b0111,
-            DIVIDEDBY64 = 0b1100,
-            DIVIDEDBY128 = 0b1101,
-            DIVIDEDBY256 = 0b1110,
-            DIVIDEDBY512 = 0b1111,
+            DIV2 = 0b1000,
+            DIV3 = 0b0001,
+            DIV4 = 0b1001,
+            DIV5 = 0b0010,
+            DIV6 = 0b0101,
+            DIV8 = 0b1010,
+            DIV10 = 0b0110,
+            DIV16 = 0b1011,           
+            DIV32 = 0b0111,
+            DIV64 = 0b1100,
+            DIV128 = 0b1101,
+            DIV256 = 0b1110,
+            DIV512 = 0b1111,
         ],
         C2HPRE OFFSET(4) NUMBITS(4) [
-            DIVIDEDBY2 = 0b1000,
-            DIVIDEDBY3 = 0b0001,
-            DIVIDEDBY4 = 0b1001,
-            DIVIDEDBY5 = 0b0010,
-            DIVIDEDBY6 = 0b0101,
-            DIVIDEDBY8 = 0b1010,
-            DIVIDEDBY10 = 0b0110,
-            DIVIDEDBY16 = 0b1011,           
-            DIVIDEDBY32 = 0b0111,
-            DIVIDEDBY64 = 0b1100,
-            DIVIDEDBY128 = 0b1101,
-            DIVIDEDBY256 = 0b1110,
-            DIVIDEDBY512 = 0b1111,
+            DIV2 = 0b1000,
+            DIV3 = 0b0001,
+            DIV4 = 0b1001,
+            DIV5 = 0b0010,
+            DIV6 = 0b0101,
+            DIV8 = 0b1010,
+            DIV10 = 0b0110,
+            DIV16 = 0b1011,           
+            DIV32 = 0b0111,
+            DIV64 = 0b1100,
+            DIV128 = 0b1101,
+            DIV256 = 0b1110,
+            DIV512 = 0b1111,
         ],
         SHDHPREF OFFSET(16) NUMBITS(1) [],
         C2HPREF OFFSET(17) NUMBITS(1) [],
@@ -551,51 +705,11 @@ register_bitfields![u32,
 const RCC_BASE: StaticRef<RccRegisters> =
     unsafe { StaticRef::new(0x5800_0000 as *const RccRegisters) };
 
-// Default values when the hardware is reset. Uncomment if you need them.
-//pub(crate) const RESET_PLLM_VALUE: usize = PLLM::DivideBy16; // M = 16
-//pub(crate) const RESET_PLLP_VALUE: PLLP = PLLP::DivideBy2; // P = 2
-//pub(crate) const RESET_PLLQ_VALUE: PLLQ = PLLQ::DivideBy4; // Q = 4
-pub(crate) const RESET_PLLN_VALUE: usize = 0b011_000_000; // N = 192
-
-// Default PLL configuration. See Rcc::init_pll_clock() for more details.
-//
-// Choose PLLM::DivideBy8 for reduced PLL jitter or PLLM::DivideBy16 for default hardware
-// configuration
-pub(crate) const DEFAULT_PLLM_VALUE: PLLM = PLLM::DivideBy8;
-// DON'T CHANGE THIS VALUE
-pub(crate) const DEFAULT_PLLN_VALUE: usize = RESET_PLLN_VALUE;
-// Dynamically computing the default PLLP value based on the PLLM value
-pub(crate) const DEFAULT_PLLP_VALUE: PLLP = match DEFAULT_PLLM_VALUE {
-    PLLM::DivideBy1 => PLLP::DivideBy8,  // VCO = 192 MHz → /8 = 24 MHz
-    PLLM::DivideBy2 => PLLP::DivideBy4,  // VCO = 96 MHz → /4 = 24 MHz
-    PLLM::DivideBy3 => PLLP::DivideBy4,  // VCO = ~64 MHz → /4 = 16 MHz
-    PLLM::DivideBy4 => PLLP::DivideBy2,  // VCO = 48 MHz → /2 = 24 MHz
-    PLLM::DivideBy5 => PLLP::DivideBy2,
-    PLLM::DivideBy6 => PLLP::DivideBy2,
-    PLLM::DivideBy7 => PLLP::DivideBy2,
-    PLLM::DivideBy8 => PLLP::DivideBy2,
-};
-// Dynamically computing the default PLLQ value based on the PLLM value
-pub(crate) const DEFAULT_PLLQ_VALUE: PLLQ = match DEFAULT_PLLM_VALUE {
-    PLLM::DivideBy1 => PLLQ::DivideBy8, // VCO = 192 MHz → /8 = 24 MHz
-    PLLM::DivideBy2 => PLLQ::DivideBy4, // VCO = 96 MHz → /4 = 24 MHz
-    PLLM::DivideBy3 => PLLQ::DivideBy3, // VCO = 64 MHz → /3 ≈ 21.3 MHz
-    PLLM::DivideBy4 => PLLQ::DivideBy2, // VCO = 48 MHz → /2 = 24 MHz
-    PLLM::DivideBy5 => PLLQ::DivideBy2, // VCO = 38.4 MHz
-    PLLM::DivideBy6 => PLLQ::DivideBy2, // VCO = 32 MHz
-    PLLM::DivideBy7 => PLLQ::DivideBy2, // VCO = ~27.4 MHz
-    PLLM::DivideBy8 => PLLQ::DivideBy2, // VCO = 24 MHz
-};
-
 pub struct Rcc {
     registers: StaticRef<RccRegisters>,
 }
 
-pub enum RtcClockSource {
-    LSI,
-    LSE,
-    HSE32,
-}
+
 
 impl Rcc {
     pub fn new() -> Self {
@@ -604,413 +718,14 @@ impl Rcc {
         };
         rcc.init();
         rcc
-    }
+    } 
 
-    // Some clocks need to be initialized before use
     fn init(&self) {
-        self.init_pll_clock();
-    }
-
-    // Init the PLL clock. The default configuration:
-    // + if DEFAULT_PLLM_VALUE == PLLM::DivideBy8:
-    //   + 2MHz VCO input frequency for reduced PLL jitter: freq_VCO_input = freq_source / PLLM
-    //   + 384MHz VCO output frequency: freq_VCO_output = freq_VCO_input * PLLN
-    //   + 96MHz main output frequency: freq_PLL = freq_VCO_output / PLLP
-    //   + 48MHz PLL48CLK output frequency: freq_PLL48CLK = freq_VCO_output / PLLQ
-    // + if DEFAULT_PLLM_VALUE == PLLM::DivideBy16: (default hardware configuration)
-    //   + 1MHz VCO input frequency for reduced PLL jitter: freq_VCO_input = freq_source / PLLM
-    //   + 384MHz VCO output frequency: freq_VCO_output = freq_VCO_input * PLLN
-    //   + 96MHz main output frequency: freq_PLL = freq_VCO_output / PLLP
-    //   + 48MHz PLL48CLK output frequency: freq_PLL48CLK = freq_VCO_output / PLLQ
-    fn init_pll_clock(&self) {
-        self.set_pll_clocks_source(PllSource::HSI);
-        self.set_pll_clocks_m_divider(DEFAULT_PLLM_VALUE);
-        self.set_pll_clock_n_multiplier(DEFAULT_PLLN_VALUE);
-        self.set_pll_clock_p_divider(DEFAULT_PLLP_VALUE);
-        self.set_pll_clock_q_divider(DEFAULT_PLLQ_VALUE);
-    }
-
-    // Get the current system clock source
-    pub(crate) fn get_sys_clock_source(&self) -> SysClockSource {
-        match self.registers.cfgr.read(CFGR::SWS) {
-            0b00 => SysClockSource::MSI,
-            0b01 => SysClockSource::HSI16,
-            0b10 => SysClockSource::HSE32,
-            _ => SysClockSource::PLLRCLK,
-        }
-    }
-
-    // Set the system clock source
-    // The source must be enabled
-    // NOTE: The flash latency also needs to be configured when changing the system clock frequency
-    pub(crate) fn set_sys_clock_source(&self, source: SysClockSource) {
-        self.registers.cfgr.modify(CFGR::SW.val(source as u32));
-    }   
-
-    /* HSI clock */
-    // The HSI clock must not be configured as the system clock, either directly or indirectly.
-    pub(crate) fn disable_hsi_clock(&self) {
-        self.registers.cr.modify(CR::HSION::CLEAR);
-    }
-
-    pub(crate) fn enable_hsi_clock(&self) {
-        self.registers.cr.modify(CR::HSION::SET);
-    }
-
-    pub(crate) fn is_enabled_hsi_clock(&self) -> bool {
-        self.registers.cr.is_set(CR::HSION)
-    }
-
-    // Indicates whether the HSI oscillator is stable
-    pub(crate) fn is_ready_hsi_clock(&self) -> bool {
-        self.registers.cr.is_set(CR::HSIRDY)
-    }
-
-    pub(crate) fn enable_hse_clock(&self) {
-        self.registers.cr.modify(CR::HSEON::SET);
-    }
-
-    pub(crate) fn is_enabled_hse_clock(&self) -> bool {
-        self.registers.cr.is_set(CR::HSEON)
-    }
-
-    // Indicates whether the HSE oscillator is stable
-    pub(crate) fn is_ready_hse_clock(&self) -> bool {
-        self.registers.cr.is_set(CR::HSERDY)
-    }
-
-    /* Main PLL clock*/
-
-    // The main PLL clock must not be configured as the system clock.
-    pub(crate) fn disable_pll_clock(&self) {
-        self.registers.cr.modify(CR::PLLON::CLEAR);
-    }
-
-    pub(crate) fn enable_pll_clock(&self) {
-        self.registers.cr.modify(CR::PLLON::SET);
-    }
-
-    pub(crate) fn is_enabled_pll_clock(&self) -> bool {
-        self.registers.cr.is_set(CR::PLLON)
-    }
-
-    // The PLL clock is locked when its signal is stable
-    pub(crate) fn is_locked_pll_clock(&self) -> bool {
-        self.registers.cr.is_set(CR::PLLRDY)
-    }
-
-    pub(crate) fn get_pll_clocks_source(&self) -> PllSource {
-        match self.registers.pllcfgr.read(PLLCFGR::PLLSRC) {
-            0b0 => PllSource::HSI,
-            _ => PllSource::HSE,
-        }
-    }
-
-    // This method must be called only when all PLL clocks are disabled
-    pub(crate) fn set_pll_clocks_source(&self, source: PllSource) {
-        self.registers
-            .pllcfgr
-            .modify(PLLCFGR::PLLSRC.val(source as u32));
-    }
-
-    pub(crate) fn get_pll_clocks_m_divider(&self) -> PLLM {
-        match self.registers.pllcfgr.read(PLLCFGR::PLLM) {
-            1 => PLLM::DivideBy1,
-            2 => PLLM::DivideBy2,
-            3 => PLLM::DivideBy3,
-            4 => PLLM::DivideBy4,
-            5 => PLLM::DivideBy5,
-            6 => PLLM::DivideBy6,
-            7 => PLLM::DivideBy7,
-            8 => PLLM::DivideBy8,
-            _ => panic!("Unexpected PLLM divider"),
-        }
-    }
-
-    // This method must be called only when all PLL clocks are disabled
-    pub(crate) fn set_pll_clocks_m_divider(&self, m: PLLM) {
-        self.registers.pllcfgr.modify(PLLCFGR::PLLM.val(m as u32));
-    }
-
-    pub(crate) fn get_pll_clock_n_multiplier(&self) -> usize {
-        self.registers.pllcfgr.read(PLLCFGR::PLLN) as usize
-    }
-
-    // This method must be called only if the main PLL clock is disabled
-    pub(crate) fn set_pll_clock_n_multiplier(&self, n: usize) {
-        self.registers.pllcfgr.modify(PLLCFGR::PLLN.val(n as u32));
-    }
-
-    pub(crate) fn get_pll_clock_p_divider(&self) -> PLLP {
-        match self.registers.pllcfgr.read(PLLCFGR::PLLP) {
-            0b00 => PLLP::DivideBy2,
-            0b01 => PLLP::DivideBy4,
-            0b10 => PLLP::DivideBy6,
-            _ => PLLP::DivideBy8,
-        }
-    }
-
-    // This method must be called only if the main PLL clock is disabled
-    pub(crate) fn set_pll_clock_p_divider(&self, p: PLLP) {
-        self.registers.pllcfgr.modify(PLLCFGR::PLLP.val(p as u32));
-    }
-
-    pub(crate) fn _get_pll_clock_q_divider(&self) -> PLLQ {
-        match self.registers.pllcfgr.read(PLLCFGR::PLLQ) {
-            2 => PLLQ::DivideBy2,
-            3 => PLLQ::DivideBy3,
-            4 => PLLQ::DivideBy4,
-            5 => PLLQ::DivideBy5,
-            6 => PLLQ::DivideBy6,
-            7 => PLLQ::DivideBy7,
-            8 => PLLQ::DivideBy8,
-            _ => panic!("Unexpected PLLQ divider"),
-        }
-    }
-
-    // This method must be called only if the main PLL clock is disabled
-    pub(crate) fn set_pll_clock_q_divider(&self, q: PLLQ) {
-        self.registers.pllcfgr.modify(PLLCFGR::PLLQ.val(q as u32));
-    }   
-
-    /* APB1 prescaler */
-
-    pub(crate) fn set_apb1_prescaler(&self, apb1_prescaler: APBPrescaler) {
-        self.registers
-            .cfgr
-            .modify(CFGR::PPRE1.val(apb1_prescaler as u32));
-    }
-
-    pub(crate) fn get_apb1_prescaler(&self) -> APBPrescaler {
-        match self.registers.cfgr.read(CFGR::PPRE1) {
-            0b100 => APBPrescaler::DivideBy2,
-            0b101 => APBPrescaler::DivideBy4,
-            0b110 => APBPrescaler::DivideBy8,
-            0b111 => APBPrescaler::DivideBy16,
-            _ => APBPrescaler::DivideBy1, // 0b0xx means no division
-        }
-    }
-
-    /* APB2 prescaler */
-
-    pub(crate) fn set_apb2_prescaler(&self, apb2_prescaler: APBPrescaler) {
-        self.registers
-            .cfgr
-            .modify(CFGR::PPRE2.val(apb2_prescaler as u32));
-    }
-
-    pub(crate) fn get_apb2_prescaler(&self) -> APBPrescaler {
-        match self.registers.cfgr.read(CFGR::PPRE2) {
-            0b100 => APBPrescaler::DivideBy2,
-            0b101 => APBPrescaler::DivideBy4,
-            0b110 => APBPrescaler::DivideBy8,
-            0b111 => APBPrescaler::DivideBy16,
-            _ => APBPrescaler::DivideBy1, // 0b0xx means no division
-        }
-    }
+        // Initialization code for RCC can be placed here.
+        // This might include setting up the clock sources, enabling peripherals, etc.
+        // For now, we will just set the default clock source to MSI at 4 MHz.
+        self.registers.cr.modify(CR::MSION.val(1));
+        self.registers.cr.modify(CR::MSIRANGE::Range4MHz);
+    }  
     
-
-    pub(crate) fn configure_rng_clock(&self) {
-        self.registers.pllcfgr.modify(PLLCFGR::PLLQ.val(2));
-        self.registers.cr.modify(CR::PLLON::SET);
-    }   
-
-    // DMA1 clock
-
-    pub(crate) fn is_enabled_dma1_clock(&self) -> bool {
-        self.registers.ahb1enr.is_set(AHB1ENR::DMA1EN)
-    }
-
-    pub(crate) fn enable_dma1_clock(&self) {
-        self.registers.ahb1enr.modify(AHB1ENR::DMA1EN::SET)
-    }
-
-    pub(crate) fn disable_dma1_clock(&self) {
-        self.registers.ahb1enr.modify(AHB1ENR::DMA1EN::CLEAR)
-    }
-
-    // DMA2 clock
-    pub(crate) fn is_enabled_dma2_clock(&self) -> bool {
-        self.registers.ahb1enr.is_set(AHB1ENR::DMA2EN)
-    }
-
-    pub(crate) fn enable_dma2_clock(&self) {
-        self.registers.ahb1enr.modify(AHB1ENR::DMA2EN::SET)
-    }
-
-    pub(crate) fn disable_dma2_clock(&self) {
-        self.registers.ahb1enr.modify(AHB1ENR::DMA2EN::CLEAR)
-    }
-   
-
-    // USART1 clock
-    pub(crate) fn is_enabled_usart1_clock(&self) -> bool {
-        self.registers.apb2enr.is_set(APB2ENR::USART1EN)
-    }
-
-    pub(crate) fn enable_usart1_clock(&self) {
-        self.registers.apb2enr.modify(APB2ENR::USART1EN::SET)
-    }
-
-    pub(crate) fn disable_usart1_clock(&self) {
-        self.registers.apb2enr.modify(APB2ENR::USART1EN::CLEAR)
-    }
-    
-
-    // RTC clock
-    pub(crate) fn source_into_u32(source: RtcClockSource) -> u32 {
-        match source {
-            RtcClockSource::LSE => 1,
-            RtcClockSource::LSI => 2,
-            RtcClockSource::HSE32 => 3,
-        }
-    }
-
-    pub(crate) fn enable_lsi_clock(&self) {
-        self.registers.csr.modify(CSR::LSION::SET);
-    }
-   
-
-    pub(crate) fn enable_rtc_clock(&self, source: RtcClockSource) {
-        // Enable LSI
-        self.enable_lsi_clock();
-        let mut counter = 1_000;
-        while counter > 0 && !self.registers.csr.is_set(CSR::LSION) {
-            counter -= 1;
-        }
-        if counter == 0 {
-            panic!("Unable to activate lsi clock");
-        }
-
-        // Select RTC clock source
-        let source_num = Rcc::source_into_u32(source);
-        self.registers.bdcr.modify(BDCR::RTCSEL.val(source_num));
-
-        // Enable RTC clock
-        self.registers.bdcr.modify(BDCR::RTCEN::SET);
-    }
-
-    pub(crate) fn disable_rtc_clock(&self) {
-        self.registers.bdcr.modify(BDCR::RTCEN.val(1));
-        self.registers.bdcr.modify(BDCR::RTCSEL.val(0));
-    }
-}
-
-#[derive(Copy, Clone, Debug, PartialEq)]
-pub(crate) enum PLLP {
-    DivideBy2 = 0b00001,
-    DivideBy4 = 0b00011,
-    DivideBy6 = 0b00101,
-    DivideBy8 = 0b01000,
-}
-
-impl From<PLLP> for usize {
-    // (variant_value + 1) * 2 = X for X in DivideByX
-    fn from(item: PLLP) -> Self {
-        (item as usize + 1) << 1
-    }
-}
-
-// Theoretically, the PLLM value can range from 2 to 63. However, the current implementation was
-// designed to support 1MHz frequency precision. In a future update, PLLM will become a usize.
-#[allow(dead_code)]
-pub(crate) enum PLLM {
-    DivideBy1 = 1,
-    DivideBy2 = 2,
-    DivideBy3,
-    DivideBy4,
-    DivideBy5,
-    DivideBy6,
-    DivideBy7,
-    DivideBy8,
-}
-
-#[derive(Copy, Clone, Debug, PartialEq)]
-// Due to the restricted values for PLLM, PLLQ 2/10-15 values are meaningless.
-pub(crate) enum PLLQ {
-    DivideBy2 = 2,
-    DivideBy3,
-    DivideBy4,
-    DivideBy5,
-    DivideBy6,
-    DivideBy7,
-    DivideBy8,
-}
-
-/// Clock sources for the CPU
-#[derive(Clone, Copy, PartialEq, Debug)]
-pub enum SysClockSource {
-    MSI = 0b00,
-    HSI16 = 0b01,
-    HSE32 = 0b10,
-    PLLRCLK = 0b11
-}
-
-pub enum PllSource {
-    HSI = 0b0,
-    HSE = 0b1,
-}
-
-pub enum MCO1Source {
-    HSI = 0b00,
-    //LSE = 0b01, // When support for LSE is added, uncomment this
-    HSE = 0b10,
-    PLL = 0b11,
-}
-
-/// HSE Mode
-#[derive(PartialEq)]
-pub enum HseMode {
-    BYPASS,
-    CRYSTAL,
-}
-
-#[derive(Clone, Copy, PartialEq, Debug)]
-pub enum AHBPrescaler {
-    DivideBy1 = 0b0000,
-    DivideBy2 = 0b1000,
-    DivideBy4 = 0b1001,
-    DivideBy8 = 0b1010,
-    DivideBy16 = 0b1011,
-    DivideBy64 = 0b1100,
-    DivideBy128 = 0b1101,
-    DivideBy256 = 0b1110,
-    DivideBy512 = 0b1111,
-}
-
-impl From<AHBPrescaler> for usize {
-    fn from(item: AHBPrescaler) -> usize {
-        match item {
-            AHBPrescaler::DivideBy1 => 1,
-            AHBPrescaler::DivideBy2 => 2,
-            AHBPrescaler::DivideBy4 => 4,
-            AHBPrescaler::DivideBy8 => 8,
-            AHBPrescaler::DivideBy16 => 16,
-            AHBPrescaler::DivideBy64 => 64,
-            AHBPrescaler::DivideBy128 => 128,
-            AHBPrescaler::DivideBy256 => 256,
-            AHBPrescaler::DivideBy512 => 512,
-        }
-    }
-}
-
-#[derive(Clone, Copy, PartialEq, Debug)]
-pub enum APBPrescaler {
-    DivideBy1 = 0b000, // No division
-    DivideBy2 = 0b100,
-    DivideBy4 = 0b101,
-    DivideBy8 = 0b110,
-    DivideBy16 = 0b111,
-}
-
-impl From<APBPrescaler> for usize {
-    fn from(item: APBPrescaler) -> Self {
-        match item {
-            APBPrescaler::DivideBy1 => 1,
-            APBPrescaler::DivideBy2 => 2,
-            APBPrescaler::DivideBy4 => 4,
-            APBPrescaler::DivideBy8 => 8,
-            APBPrescaler::DivideBy16 => 16,
-        }
-    }
 }
