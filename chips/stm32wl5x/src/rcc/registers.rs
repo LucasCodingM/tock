@@ -1,8 +1,3 @@
-// Licensed under the Apache License, Version 2.0 or the MIT License.
-// SPDX-License-Identifier: Apache-2.0 OR MIT
-// Copyright Tock Contributors 2022.
-
-use kernel::utilities::registers::interfaces::{ReadWriteable, Readable};
 use kernel::utilities::registers::{register_bitfields, ReadWrite};
 use kernel::utilities::StaticRef;
 
@@ -28,115 +23,115 @@ domains is 48 MHz. */
 
 /// Reset and clock control register block.
 #[repr(C)]
-struct RccRegisters {
+pub struct RccRegisters {
     /// Control Register – Enables/disables oscillators (HSI, HSE, MSI, etc.)
-    cr: ReadWrite<u32, CR::Register>,
+    pub cr: ReadWrite<u32, CR::Register>,
     /// Internal Clock Sources Calibration Register – Calibrates internal clocks (e.g., MSI, HSI)
-    icscr: ReadWrite<u32, ICSCR::Register>,
+    pub icscr: ReadWrite<u32, ICSCR::Register>,
     /// Clock Configuration Register – Selects system clock source (SYSCLK), AHB/APB prescalers
-    cfgr: ReadWrite<u32, CFGR::Register>,
+    pub cfgr: ReadWrite<u32, CFGR::Register>,
     /// PLL Configuration Register – Configures PLL multipliers/dividers (M, N, R, P, Q)
-    pllcfgr: ReadWrite<u32, PLLCFGR::Register>,
+    pub pllcfgr: ReadWrite<u32, PLLCFGR::Register>,
     /// Clock Interrupt Enable Register – Enables interrupts for clock events
-    cier: ReadWrite<u32, CIER::Register>,
+    pub cier: ReadWrite<u32, CIER::Register>,
     /// Clock Interrupt Flag Register – Indicates which clock interrupt has occurred
-    cifr: ReadWrite<u32, CIFR::Register>,
+    pub cifr: ReadWrite<u32, CIFR::Register>,
     /// Clock Interrupt Clear Register – Clears clock interrupt flags
-    cicr: ReadWrite<u32, CICR::Register>,
+    pub cicr: ReadWrite<u32, CICR::Register>,
 
     /// Reset peripherals on AHB1 bus
-    ahb1rstr: ReadWrite<u32, AHB1RSTR::Register>,
+    pub ahb1rstr: ReadWrite<u32, AHB1RSTR::Register>,
     /// Reset peripherals on AHB2 bus
-    ahb2rstr: ReadWrite<u32, AHB2RSTR::Register>,
+    pub ahb2rstr: ReadWrite<u32, AHB2RSTR::Register>,
     ///	Reset peripherals on AHB3 bus
-    ahb3rstr: ReadWrite<u32, AHB3RSTR::Register>,
+    pub ahb3rstr: ReadWrite<u32, AHB3RSTR::Register>,
     /// Reset APB1 (part 1) peripherals
-    apb1rstr1: ReadWrite<u32, APB1RSTR1::Register>,
+    pub apb1rstr1: ReadWrite<u32, APB1RSTR1::Register>,
     /// Reset APB1 (part 2) peripherals
-    apb1rstr2: ReadWrite<u32, APB1RSTR2::Register>,
+    pub apb1rstr2: ReadWrite<u32, APB1RSTR2::Register>,
     /// Reset APB2 peripherals
-    apb2rstr: ReadWrite<u32, APB2RSTR::Register>,
+    pub apb2rstr: ReadWrite<u32, APB2RSTR::Register>,
     /// Reset APB3 peripherals
-    apb3rstr: ReadWrite<u32, APB3RSTR::Register>,
+    pub apb3rstr: ReadWrite<u32, APB3RSTR::Register>,
 
     /// Enable clock for AHB1 peripherals
-    ahb1enr: ReadWrite<u32, AHB1ENR::Register>,
+    pub ahb1enr: ReadWrite<u32, AHB1ENR::Register>,
     /// Enable clock for AHB2 peripherals
-    ahb2enr: ReadWrite<u32, AHB2ENR::Register>,
+    pub ahb2enr: ReadWrite<u32, AHB2ENR::Register>,
     /// Enable clock for AHB3 peripherals
-    ahb3enr: ReadWrite<u32, AHB3ENR::Register>,
+    pub ahb3enr: ReadWrite<u32, AHB3ENR::Register>,
     /// Enable APB1 (part 1) peripheral clocks
-    apb1enr1: ReadWrite<u32, APB1ENR1::Register>,
+    pub apb1enr1: ReadWrite<u32, APB1ENR1::Register>,
     /// Enable APB1 (part 2) peripheral clocks
-    apb1enr2: ReadWrite<u32, APB1ENR2::Register>,
+    pub apb1enr2: ReadWrite<u32, APB1ENR2::Register>,
     /// Enable APB2 peripheral clocks
-    apb2enr: ReadWrite<u32, APB2ENR::Register>,
+    pub apb2enr: ReadWrite<u32, APB2ENR::Register>,
     /// Enable APB3 peripheral clocks
-    apb3enr: ReadWrite<u32, APB3ENR::Register>,
+    pub apb3enr: ReadWrite<u32, APB3ENR::Register>,
 
     /// Keep AHB1 clocks enabled during Sleep
-    ahb1smenr: ReadWrite<u32, AHB1SMENR::Register>,
+    pub ahb1smenr: ReadWrite<u32, AHB1SMENR::Register>,
     /// Same for AHB2 clocks
-    ahb2smenr: ReadWrite<u32, AHB2SMENR::Register>,
+    pub ahb2smenr: ReadWrite<u32, AHB2SMENR::Register>,
     /// Same for AHB3 clocks
-    ahb3smenr: ReadWrite<u32, AHB3SMENR::Register>,
+    pub ahb3smenr: ReadWrite<u32, AHB3SMENR::Register>,
     /// APB1 (part 1) sleep mode clock control
-    apb1smenr1: ReadWrite<u32, APB1SMENR1::Register>,
+    pub apb1smenr1: ReadWrite<u32, APB1SMENR1::Register>,
     /// APB1 (part 2) sleep mode clock control
-    apb1smenr2: ReadWrite<u32, APB1SMENR2::Register>,
+    pub apb1smenr2: ReadWrite<u32, APB1SMENR2::Register>,
     /// APB2 sleep mode clock control
-    apb2smenr: ReadWrite<u32, APB2SMENR::Register>,
+    pub apb2smenr: ReadWrite<u32, APB2SMENR::Register>,
     /// APB3 sleep mode clock control
-    apb3smenr: ReadWrite<u32, APB3SMENR::Register>,
+    pub apb3smenr: ReadWrite<u32, APB3SMENR::Register>,
 
     /// Clock Configuration Independent Peripherals Register 
     /// Selects clock sources for specific peripherals (USARTs, ADCs, RNG, etc.)
-    ccipr: ReadWrite<u32, CCIPR::Register>,
+    pub ccipr: ReadWrite<u32, CCIPR::Register>,
 
     /// Backup Domain Control Register – Controls LSE, RTC, backup RAM, and reset
-    bdcr: ReadWrite<u32, BDCR::Register>,
+    pub bdcr: ReadWrite<u32, BDCR::Register>,
     /// Control and Status Register 
     /// Flags for resets, IWDG, BOR, etc.
-    csr: ReadWrite<u32, CSR::Register>,
+    pub csr: ReadWrite<u32, CSR::Register>,
     /// Extended Clock Configuration Register 
     /// Additional config (e.g., CPU frequency scaling, power saving)
 
     /// Extended Clock Configuration Register
     /// Additional config (e.g., CPU frequency scaling, power saving)
-    extcfgr: ReadWrite<u32, EXTCFGR::Register>,
+    pub extcfgr: ReadWrite<u32, EXTCFGR::Register>,
 
     /// AHB1 enable for CPU2
-    c2ahb1enr: ReadWrite<u32, C2AHB1ENR::Register>,
+    pub c2ahb1enr: ReadWrite<u32, C2AHB1ENR::Register>,
     /// AHB2 enable for CPU2
-    c2ahb2enr: ReadWrite<u32, C2AHB2ENR::Register>,
+    pub c2ahb2enr: ReadWrite<u32, C2AHB2ENR::Register>,
     /// AHB3 enable for CPU2
-    c2ahb3enr: ReadWrite<u32, C2AHB3ENR::Register>,
+    pub c2ahb3enr: ReadWrite<u32, C2AHB3ENR::Register>,
     /// APB1 (part 1) enable for CPU2
-    c2apb1enr1: ReadWrite<u32, C2APB1ENR1::Register>,
+    pub c2apb1enr1: ReadWrite<u32, C2APB1ENR1::Register>,
     /// APB1 (part 2) enable for CPU2
-    c2apb1enr2: ReadWrite<u32, C2APB1ENR2::Register>,
+    pub c2apb1enr2: ReadWrite<u32, C2APB1ENR2::Register>,
     // APB2 enable for CPU2
-    c2apb2enr: ReadWrite<u32, C2APB2ENR::Register>,
+    pub c2apb2enr: ReadWrite<u32, C2APB2ENR::Register>,
     /// APB3 enable for CPU2
-    c2apb3enr: ReadWrite<u32, C2APB3ENR::Register>,
+    pub c2apb3enr: ReadWrite<u32, C2APB3ENR::Register>,
     /// AHB1 sleep mode enable for CPU2
-    c2ahb1smenr: ReadWrite<u32, C2AHB1SMENR::Register>,
+    pub c2ahb1smenr: ReadWrite<u32, C2AHB1SMENR::Register>,
     /// AHB2 sleep mode enable for CPU2
-    c2ahb2smenr: ReadWrite<u32, C2AHB2SMENR::Register>,
+    pub c2ahb2smenr: ReadWrite<u32, C2AHB2SMENR::Register>,
     /// AHB3 sleep mode enable for CPU2
-    c2ahb3smenr: ReadWrite<u32, C2AHB3SMENR::Register>,
+    pub c2ahb3smenr: ReadWrite<u32, C2AHB3SMENR::Register>,
     /// APB1 (part 1) sleep mode enable for CPU2
-    c2apb1smenr1: ReadWrite<u32, C2APB1SMENR1::Register>,
+    pub c2apb1smenr1: ReadWrite<u32, C2APB1SMENR1::Register>,
     /// APB1 (part 2) sleep mode enable for CPU2
-    c2apb1smenr2: ReadWrite<u32, C2APB1SMENR2::Register>,
+    pub c2apb1smenr2: ReadWrite<u32, C2APB1SMENR2::Register>,
     /// APB2 sleep mode enable for CPU2
-    c2apb2smenr: ReadWrite<u32, C2APB2SMENR::Register>,
+    pub c2apb2smenr: ReadWrite<u32, C2APB2SMENR::Register>,
     /// APB3 sleep mode enable for CPU2
-    c2apb3smenr: ReadWrite<u32, C2APB3SMENR::Register>,    
+    pub c2apb3smenr: ReadWrite<u32, C2APB3SMENR::Register>,    
 }
 
 register_bitfields![u32,
-    CR [
+    pub CR [
         MSION OFFSET(0) NUMBITS(1) [],
         MSIRDY OFFSET(1) NUMBITS(1) [],
         MSIPLLEN OFFSET(2) NUMBITS(1) [],
@@ -168,13 +163,13 @@ register_bitfields![u32,
         PLLON OFFSET(24) NUMBITS(1) [],
         PLLRDY OFFSET(25) NUMBITS(1) [],
     ],
-    ICSCR [
+    pub ICSCR [
         MSICAL OFFSET(0) NUMBITS(8) [],
         MSITRIM OFFSET(8) NUMBITS(8) [],
         HSICAL OFFSET(16) NUMBITS(8) [],
         HSITRIM OFFSET(24) NUMBITS(8) [],
     ],
-    CFGR [
+    pub CFGR [
     MCOPRE OFFSET(28) NUMBITS(3) [
         Div1 = 0b000,  // MCO divided by 1
         Div2 = 0b001,  // MCO divided by 2
@@ -235,12 +230,7 @@ register_bitfields![u32,
         Div512  = 0b1111, // SYSCLK divided by 512
     ],
     /// System clock switch status
-    SWS OFFSET(2) NUMBITS(2) [
-        MSI = 0b00,
-        HSI16 = 0b01,
-        HSE32 = 0b10,
-        PLLRCLK = 0b11,        
-    ],
+    SWS OFFSET(2) NUMBITS(2) [],
     /// System clock switch
     SW OFFSET(0) NUMBITS(2) [
         MSI = 0b00,
@@ -249,10 +239,11 @@ register_bitfields![u32,
         PLLRCLK = 0b11,        
     ]
     ],
-    PLLCFGR [
-        PLLSRC OFFSET(0) NUMBITS(1) [
-            HSI = 0,
-            HSE = 1,
+    pub PLLCFGR [
+        PLLSRC OFFSET(0) NUMBITS(2) [
+            MSI = 0b01,
+            HSI16 = 0b01,
+            HSE32 = 0b11,
         ],
         PLLM OFFSET(4) NUMBITS(3) [],        
         PLLN OFFSET(8) NUMBITS(7) [],
@@ -290,7 +281,7 @@ register_bitfields![u32,
             Div8     = 0b111, // PLLR = 8
         ],           
     ],
-    CIER [
+    pub CIER [
         LSIRDYIE OFFSET(0) NUMBITS(1) [],
         LSERDYIE OFFSET(1) NUMBITS(1) [],
         MSIRDYIE OFFSET(2) NUMBITS(1) [],
@@ -299,7 +290,7 @@ register_bitfields![u32,
         PLLRDYIE OFFSET(5) NUMBITS(1) [],
         LSECSSIE OFFSET(9) NUMBITS(1) [],
     ],
-    CIFR [
+    pub CIFR [
         LSIRDYF OFFSET(0) NUMBITS(1) [],
         LSERDYF OFFSET(1) NUMBITS(1) [],
         MSIRDYF OFFSET(2) NUMBITS(1) [],
@@ -309,7 +300,7 @@ register_bitfields![u32,
         CSSF    OFFSET(8) NUMBITS(1) [],
         LSECSSF OFFSET(9) NUMBITS(1) []
     ],
-    CICR [
+    pub CICR [
         LSIRDYC OFFSET(0) NUMBITS(1) [],
         LSERDYC OFFSET(1) NUMBITS(1) [],
         MSIDYC OFFSET(2) NUMBITS(1) [],
@@ -319,19 +310,19 @@ register_bitfields![u32,
         CSSC    OFFSET(8) NUMBITS(1) [],
         LSECSSC OFFSET(9) NUMBITS(1) []
     ],
-    AHB1RSTR [
+    pub AHB1RSTR [
          DMA1RST OFFSET(0) NUMBITS(1) [],
          DMA2RST OFFSET(1) NUMBITS(1) [],
          DMAMUX1RST OFFSET(2) NUMBITS(1) [],
          CRCRST OFFSET(12) NUMBITS(1) [],
     ],
-    AHB2RSTR [
+    pub AHB2RSTR [
         GPIOARST OFFSET(0) NUMBITS(1) [],
         GPIOBRST OFFSET(1) NUMBITS(1) [],
         GPIOCRST OFFSET(2) NUMBITS(1) [],
         GPIOHRST OFFSET(7) NUMBITS(1) [],
     ],
-    AHB3RSTR [
+    pub AHB3RSTR [
         PKARST OFFSET(16) NUMBITS(1) [],
         AESRST OFFSET(17) NUMBITS(1) [],
         RNGRST OFFSET(18) NUMBITS(1) [],
@@ -339,7 +330,7 @@ register_bitfields![u32,
         IPCCRST OFFSET(20) NUMBITS(1) [],
         FLASHRST OFFSET(25) NUMBITS(1) [],
     ],
-    APB1RSTR1 [
+    pub APB1RSTR1 [
         TIM2RST OFFSET(0) NUMBITS(1) [],
         SPI2S2RST OFFSET(14) NUMBITS(1) [],
         USART2RST OFFSET(17) NUMBITS(1) [],
@@ -349,12 +340,12 @@ register_bitfields![u32,
         DACRST OFFSET(29) NUMBITS(1) [],
         LPTIM1RST OFFSET(31) NUMBITS(1) [],
     ],
-    APB1RSTR2 [
+    pub APB1RSTR2 [
         LPUART1RST OFFSET(0) NUMBITS(1) [],
         LPTIM2RST OFFSET(5) NUMBITS(1) [],
         LPTIM3RST OFFSET(6) NUMBITS(1) [],
     ],
-    APB2RSTR [
+    pub APB2RSTR [
         ADCRST OFFSET(9) NUMBITS(1) [],
         TIM1RST OFFSET(11) NUMBITS(1) [],
         SPI1RST OFFSET(12) NUMBITS(1) [],
@@ -362,22 +353,22 @@ register_bitfields![u32,
         TIM16RST OFFSET(17) NUMBITS(1) [],
         TIM17RST OFFSET(18) NUMBITS(1) [],
     ],
-    APB3RSTR [
+    pub APB3RSTR [
         SUBGHZSPIRST OFFSET(0) NUMBITS(1) [],
     ],
-    AHB1ENR [
+    pub AHB1ENR [
         DMA1EN OFFSET(0) NUMBITS(1) [],
         DMA2EN OFFSET(1) NUMBITS(1) [],
         DMAMUX1EN OFFSET(2) NUMBITS(1) [],
         CRCEN OFFSET(12) NUMBITS(1) [],
     ],
-    AHB2ENR [
+    pub AHB2ENR [
         GPIOAEN OFFSET(0) NUMBITS(1) [],
         GPIOBEN OFFSET(1) NUMBITS(1) [],
         GPIOCEN OFFSET(2) NUMBITS(1) [],
         GPIOHEN OFFSET(7) NUMBITS(1) [],
     ],
-    AHB3ENR [
+    pub AHB3ENR [
         PKAEN OFFSET(16) NUMBITS(1) [],
         AESEN OFFSET(17) NUMBITS(1) [],
         RNGEN OFFSET(18) NUMBITS(1) [],
@@ -385,7 +376,7 @@ register_bitfields![u32,
         IPCC OFFSET(20) NUMBITS(1) [],
         FLASHEN OFFSET(25) NUMBITS(1) [],
     ],
-    APB1ENR1 [
+    pub APB1ENR1 [
         TIM2EN      OFFSET(0) NUMBITS(1) [],
         RTCAPBEN    OFFSET(10) NUMBITS(1) [],
         WWDGEN      OFFSET(11) NUMBITS(1) [],
@@ -397,12 +388,12 @@ register_bitfields![u32,
         DACEN       OFFSET(29) NUMBITS(1) [],
         LPTIM1EN    OFFSET(31) NUMBITS(1) [],
     ],
-    APB1ENR2 [
+    pub APB1ENR2 [
         LPUART1EN     OFFSET(0) NUMBITS(1) [],
         LPTIM2EN      OFFSET(5) NUMBITS(1) [],
         LPTIM3EN      OFFSET(6) NUMBITS(1) [],
     ],
-    APB2ENR [
+    pub APB2ENR [
         ADCEN       OFFSET(9) NUMBITS(1) [],
         TIM1EN       OFFSET(11) NUMBITS(1) [],
         SPI1EN       OFFSET(12) NUMBITS(1) [],
@@ -410,22 +401,22 @@ register_bitfields![u32,
         TIM16EN       OFFSET(17) NUMBITS(1) [],
         TIM17EN       OFFSET(18) NUMBITS(1) [],
     ],
-    APB3ENR [
+    pub APB3ENR [
         SUBGHZSPIEN       OFFSET(0) NUMBITS(1) [],
     ],
-    AHB1SMENR [
+    pub AHB1SMENR [
         DMA1SMEN OFFSET(0) NUMBITS(1) [],
         DMA2SMEN OFFSET(1) NUMBITS(1) [],
         DMAMUX1SMEN OFFSET(2) NUMBITS(1) [],
         CRCSMEN OFFSET(12) NUMBITS(1) [],
     ],
-    AHB2SMENR [
+    pub AHB2SMENR [
         GPIOASMEN OFFSET(0) NUMBITS(1) [],
         GPIOBSMEN OFFSET(1) NUMBITS(1) [],
         GPIOCSMEN OFFSET(2) NUMBITS(1) [],
         GPIOHSMEN OFFSET(7) NUMBITS(1) [],
     ],
-    AHB3SMENR [
+    pub AHB3SMENR [
         PKASMEN OFFSET(16) NUMBITS(1) [],
         AESSMEN OFFSET(17) NUMBITS(1) [],
         RNGSMEN OFFSET(18) NUMBITS(1) [],
@@ -433,7 +424,7 @@ register_bitfields![u32,
         SRAM2SMEN OFFSET(24) NUMBITS(1) [],
         FLASHSMEN OFFSET(25) NUMBITS(1) [],
     ],
-    APB1SMENR1 [
+    pub APB1SMENR1 [
         TIM2SMEN OFFSET(0) NUMBITS(1) [],
         RTCAPBSMEN OFFSET(10) NUMBITS(1) [],
         WWDGSMEN OFFSET(11) NUMBITS(1) [],
@@ -445,12 +436,12 @@ register_bitfields![u32,
         DACSMEN OFFSET(29) NUMBITS(1) [],
         LPTIM1SMEN OFFSET(31) NUMBITS(1) [],
     ],
-    APB1SMENR2 [
+    pub APB1SMENR2 [
         LPUART1SMEN OFFSET(0) NUMBITS(1) [],
         LPTIM2SMEN OFFSET(5) NUMBITS(1) [],
         LPTIM3SMEN OFFSET(6) NUMBITS(1) [],
     ],
-    APB2SMENR [
+    pub APB2SMENR [
         ADCSMEN OFFSET(9) NUMBITS(1) [],
         TIM1SMEN OFFSET(11) NUMBITS(1) [],
         SPI1SMEN OFFSET(12) NUMBITS(1) [],
@@ -458,10 +449,10 @@ register_bitfields![u32,
         TIM16SMEN OFFSET(17) NUMBITS(1) [],
         TIM17SMEN OFFSET(18) NUMBITS(1) [],
     ],
-    APB3SMENR [
+    pub APB3SMENR [
         SUBGHZSPISMEN OFFSET(0) NUMBITS(1) [],
     ],
-    CCIPR [
+    pub CCIPR [
         USART1SEL OFFSET(0) NUMBITS(2) [
             PCLK = 0b00,
             SYSCLK = 0b01,
@@ -530,7 +521,7 @@ register_bitfields![u32,
             MSI = 0b11,
         ],
     ],
-    BDCR [
+    pub BDCR [
         LSEON       OFFSET(0)   NUMBITS(1) [],
         LSERDY      OFFSET(1)   NUMBITS(1) [],
         LSEBYP      OFFSET(2)   NUMBITS(1) [],
@@ -549,7 +540,7 @@ register_bitfields![u32,
         LSCOEN      OFFSET(24)  NUMBITS(1) [],
         LSCOSEL     OFFSET(25)  NUMBITS(1) [],
     ],   
-    CSR [
+    pub CSR [
         LSION OFFSET(0) NUMBITS(1) [],
         LSIRDY OFFSET(1) NUMBITS(1) [],
         LSIPRE OFFSET(4) NUMBITS(1) [],
@@ -571,7 +562,7 @@ register_bitfields![u32,
         WWDGRSTF OFFSET(30) NUMBITS(1) [],
         LPWRRSTF OFFSET(31) NUMBITS(1) [],
     ],
-    EXTCFGR [
+    pub EXTCFGR [
         SHDHPRE OFFSET(0) NUMBITS(4) [
             DIV2 = 0b1000,
             DIV3 = 0b0001,
@@ -605,19 +596,19 @@ register_bitfields![u32,
         SHDHPREF OFFSET(16) NUMBITS(1) [],
         C2HPREF OFFSET(17) NUMBITS(1) [],
     ],
-    C2AHB1ENR [
+    pub C2AHB1ENR [
         DMA1EN OFFSET(0) NUMBITS(1) [],
         DMA2EN OFFSET(1) NUMBITS(1) [],
         DMAMUX1EN OFFSET(2) NUMBITS(1) [],
         CRCEN OFFSET(12) NUMBITS(1) [],
     ],
-    C2AHB2ENR [
+    pub C2AHB2ENR [
         GPIOAEN OFFSET(0) NUMBITS(1) [],
         GPIOBEN OFFSET(1) NUMBITS(1) [],
         GPIOCEN OFFSET(2) NUMBITS(1) [],
         GPIOHEN OFFSET(7) NUMBITS(1) [],
     ],
-    C2AHB3ENR [
+    pub C2AHB3ENR [
         PKAEN OFFSET(16) NUMBITS(1) [],
         AESEN OFFSET(17) NUMBITS(1) [],
         RNGEN OFFSET(18) NUMBITS(1) [],
@@ -625,7 +616,7 @@ register_bitfields![u32,
         IPCC OFFSET(20) NUMBITS(1) [],
         FLASHEN OFFSET(25) NUMBITS(1) [],
     ],
-    C2APB1ENR1 [
+    pub C2APB1ENR1 [
         TIM2EN      OFFSET(0) NUMBITS(1) [],
         RTCAPBEN    OFFSET(10) NUMBITS(1) [],
         SPI2S2EN    OFFSET(14) NUMBITS(1) [],
@@ -636,12 +627,12 @@ register_bitfields![u32,
         DACEN       OFFSET(29) NUMBITS(1) [],
         LPTIM1EN    OFFSET(31) NUMBITS(1) [],
     ],
-    C2APB1ENR2 [
+    pub C2APB1ENR2 [
         LPUART1EN     OFFSET(0) NUMBITS(1) [],
         LPTIM2EN      OFFSET(5) NUMBITS(1) [],
         LPTIM3EN      OFFSET(6) NUMBITS(1) [],
     ],
-    C2APB2ENR [
+    pub C2APB2ENR [
         ADCEN       OFFSET(9) NUMBITS(1) [],
         TIM1EN       OFFSET(11) NUMBITS(1) [],
         SPI1EN       OFFSET(12) NUMBITS(1) [],
@@ -649,22 +640,22 @@ register_bitfields![u32,
         TIM16EN       OFFSET(17) NUMBITS(1) [],
         TIM17EN       OFFSET(18) NUMBITS(1) [],
     ],
-    C2APB3ENR [
+    pub C2APB3ENR [
         SUBGHZSPIEN       OFFSET(0) NUMBITS(1) [],
     ],
-    C2AHB1SMENR [
+    pub C2AHB1SMENR [
         DMA1SMEN OFFSET(0) NUMBITS(1) [],
         DMA2SMEN OFFSET(1) NUMBITS(1) [],
         DMAMUX1SMEN OFFSET(2) NUMBITS(1) [],
         CRCSMEN OFFSET(12) NUMBITS(1) [],
     ],
-    C2AHB2SMENR [
+    pub C2AHB2SMENR [
         GPIOASMEN OFFSET(0) NUMBITS(1) [],
         GPIOBSMEN OFFSET(1) NUMBITS(1) [],
         GPIOCSMEN OFFSET(2) NUMBITS(1) [],
         GPIOHSMEN OFFSET(7) NUMBITS(1) [],
     ],
-    C2AHB3SMENR [
+    pub C2AHB3SMENR [
         PKASMEN OFFSET(16) NUMBITS(1) [],
         AESSMEN OFFSET(17) NUMBITS(1) [],
         RNGSMEN OFFSET(18) NUMBITS(1) [],
@@ -672,7 +663,7 @@ register_bitfields![u32,
         SRAM2SMEN OFFSET(24) NUMBITS(1) [],
         FLASHSMEN OFFSET(25) NUMBITS(1) [],
     ],
-    C2APB1SMENR1 [
+    pub C2APB1SMENR1 [
         TIM2SMEN OFFSET(0) NUMBITS(1) [],
         RTCAPBSMEN OFFSET(10) NUMBITS(1) [],
         SPI2S2SMEN OFFSET(14) NUMBITS(1) [],
@@ -683,12 +674,12 @@ register_bitfields![u32,
         DACSMEN OFFSET(29) NUMBITS(1) [],
         LPTIM1SMEN OFFSET(31) NUMBITS(1) [],
     ],
-    C2APB1SMENR2 [
+    pub C2APB1SMENR2 [
         LPUART1SMEN OFFSET(0) NUMBITS(1) [],
         LPTIM2SMEN OFFSET(5) NUMBITS(1) [],
         LPTIM3SMEN OFFSET(6) NUMBITS(1) [],
     ],
-    C2APB2SMENR [
+    pub C2APB2SMENR [
         ADCSMEN OFFSET(9) NUMBITS(1) [],
         TIM1SMEN OFFSET(11) NUMBITS(1) [],
         SPI1SMEN OFFSET(12) NUMBITS(1) [],
@@ -696,7 +687,7 @@ register_bitfields![u32,
         TIM16SMEN OFFSET(17) NUMBITS(1) [],
         TIM17SMEN OFFSET(18) NUMBITS(1) [],
     ],
-    C2APB3SMENR [
+    pub C2APB3SMENR [
         SUBGHZSPISMEN OFFSET(0) NUMBITS(1) [],
     ],
 
@@ -705,27 +696,19 @@ register_bitfields![u32,
 const RCC_BASE: StaticRef<RccRegisters> =
     unsafe { StaticRef::new(0x5800_0000 as *const RccRegisters) };
 
+// Default values for PLL configuration
+pub const DEFAULT_PLLM_VALUE: u32 = 1; // Default value for PLLM divider
+pub const DEFAULT_PLLN_VALUE: u32 = 8; // Default value for PLLN divider
+pub const DEFAULT_PLLP_VALUE: u32 = 2; // Default value for PLLP divider
+pub const DEFAULT_PLLQ_VALUE: u32 = 2; // Default value for PLLQ divider
+pub const DEFAULT_PLLR_VALUE: u32 = 2; // Default value for PLLR divider
+
 pub struct Rcc {
     registers: StaticRef<RccRegisters>,
 }
 
-
-
 impl Rcc {
-    pub fn new() -> Self {
-        let rcc = Self {
-            registers: RCC_BASE,
-        };
-        rcc.init();
-        rcc
-    } 
-
-    fn init(&self) {
-        // Initialization code for RCC can be placed here.
-        // This might include setting up the clock sources, enabling peripherals, etc.
-        // For now, we will just set the default clock source to MSI at 4 MHz.
-        self.registers.cr.modify(CR::MSION.val(1));
-        self.registers.cr.modify(CR::MSIRANGE::Range4MHz);
-    }  
-    
+    pub(crate) fn registers(&self) -> &RccRegisters {
+        &*self.registers
+    }
 }

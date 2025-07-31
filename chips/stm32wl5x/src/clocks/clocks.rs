@@ -2,7 +2,7 @@
 //! This abstracts the Rcc registers to safely switch between clocks,
 //! configure PLL, and select SYSCLK source.
 
-use crate::rcc::Rcc;
+use crate::rcc::registers::Rcc;
 use crate::chip_specific::ChipSpecs as ChipSpecsTrait;
 use kernel::utilities::registers::interfaces::{Readable, Writeable};
 
@@ -45,6 +45,6 @@ impl<'a, ChipSpecs: ChipSpecsTrait> Stm32wl5xClocks for Clocks<'a, ChipSpecs> {
     }
 
     fn get_ahb_frequency(&self) -> usize {
-        self.get_ahb_frequency_mhz() * 1_000_000
+        self.get_ahb_frequency_mhz() * 1_000_000 // Convert mHz in Hz
     }
 }
