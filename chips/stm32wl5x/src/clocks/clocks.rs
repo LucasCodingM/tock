@@ -3,6 +3,7 @@
 //! configure PLL, and select SYSCLK source.
 
 use crate::rcc::registers::Rcc;
+use crate::clocks::{hsi, hse, pll};
 use crate::chip_specific::ChipSpecs as ChipSpecsTrait;
 use kernel::utilities::registers::interfaces::{Readable, Writeable};
 
@@ -10,12 +11,12 @@ use kernel::utilities::registers::interfaces::{Readable, Writeable};
 pub struct Clocks<'a, ChipSpecs> {
     rcc: &'a Rcc,
     //flash: OptionalCell<&'a Flash<ChipSpecs>>,
-    /// High speed internal clock
-    //pub hsi: Hsi<'a>,
-    /// High speed external clock
-    //pub hse: Hse<'a>,
-    /// Main phase loop-lock clock
-    //pub pll: Pll<'a, ChipSpecs>,
+    // High speed internal clock
+    pub hsi: hsi::Hsi<'a>,
+    // High speed external clock
+    pub hse: hse::Hse<'a>,
+    // Main phase loop-lock clock
+    //pub pll: pll::Pll<'a, ChipSpecs>,
 }
 
 impl<'a, ChipSpecs: ChipSpecsTrait> Clocks<'a, ChipSpecs> {
@@ -28,6 +29,12 @@ impl<'a, ChipSpecs: ChipSpecsTrait> Clocks<'a, ChipSpecs> {
             hse: Hse::new(rcc),
             pll: Pll::new(rcc), */
         }
+    }
+
+    /// Get the frequency of the AHB
+    pub fn get_ahb_frequency_mhz(&self) -> usize {
+        let ahb_divider: usize = self.get_ahb_prescaler().into();
+        self.get_sys_clock_frequency_mhz() / ahb_divider
     }
 }
 

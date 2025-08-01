@@ -1,6 +1,7 @@
 pub mod pll;
-pub mod msi;
-pub mod hse;
-pub mod hsi;
+pub mod oscillator;
 pub mod system_clock;
 pub mod registers;
+pub mod prescaler;
+pub mod serial_com;
+pub mod timers;
