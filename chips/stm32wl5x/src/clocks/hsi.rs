@@ -45,6 +45,8 @@ use kernel::ErrorCode;
 
 /// HSI frequency in MHz
 pub const HSI_FREQUENCY_MHZ: usize = 16;
+pub const HSE_FREQUENCY_MHZ: usize = 32;
+pub const MSI_DEFAULT_FREQUENCY_MHZ: usize = 4;
 
 /// Main HSI clock structure
 pub struct Hsi<'a> {

@@ -146,6 +146,8 @@ impl Rcc {
         }
     }
 
+    
+
     // It must be enabled after LSE is enabled (LSEON = 1) and ready (LSERDY set by
     // hardware).There is a hardware protection to avoid enabling this bit if LSE is not ready.
     // This bit is cleared by hardware when LSE is disabled (LSEON = 0) or when the CSS on LSE
@@ -229,6 +231,31 @@ pub enum MsiRange {
     Range24MHz  = 0b1001,
     Range32MHz  = 0b1010,
     Range48MHz  = 0b1011,
+}
+
+impl MsiRange {
+    /// Retourne la fréquence en Hz
+    pub fn frequency_hz(&self) -> u32 {
+        match self {
+            MsiRange::Range100kHz => 100_000,
+            MsiRange::Range200kHz => 200_000,
+            MsiRange::Range400kHz => 400_000,
+            MsiRange::Range800kHz => 800_000,
+            MsiRange::Range1MHz   => 1_000_000,
+            MsiRange::Range2MHz   => 2_000_000,
+            MsiRange::Range4MHz   => 4_000_000,
+            MsiRange::Range8MHz   => 8_000_000,
+            MsiRange::Range16MHz  => 16_000_000,
+            MsiRange::Range24MHz  => 24_000_000,
+            MsiRange::Range32MHz  => 32_000_000,
+            MsiRange::Range48MHz  => 48_000_000,
+        }
+    }
+
+    /// Retourne la fréquence en MHz (arrondie)
+    pub fn frequency_mhz(&self) -> u32 {
+        self.frequency_hz() / 1_000_000
+    }
 }
 
 /// HSE Mode

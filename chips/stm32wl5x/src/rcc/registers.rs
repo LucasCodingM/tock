@@ -697,11 +697,11 @@ const RCC_BASE: StaticRef<RccRegisters> =
     unsafe { StaticRef::new(0x5800_0000 as *const RccRegisters) };
 
 // Default values for PLL configuration
-pub const DEFAULT_PLLM_VALUE: u32 = 1; // Default value for PLLM divider
-pub const DEFAULT_PLLN_VALUE: u32 = 8; // Default value for PLLN divider
-pub const DEFAULT_PLLP_VALUE: u32 = 2; // Default value for PLLP divider
-pub const DEFAULT_PLLQ_VALUE: u32 = 2; // Default value for PLLQ divider
-pub const DEFAULT_PLLR_VALUE: u32 = 2; // Default value for PLLR divider
+pub const DEFAULT_PLLM_VALUE: usize = 1; // Default value for PLLM divider
+pub const DEFAULT_PLLN_VALUE: usize = 8; // Default value for PLLN divider
+pub const DEFAULT_PLLP_VALUE: usize = 2; // Default value for PLLP divider
+pub const DEFAULT_PLLQ_VALUE: usize = 2; // Default value for PLLQ divider
+pub const DEFAULT_PLLR_VALUE: usize = 2; // Default value for PLLR divider
 
 pub struct Rcc {
     registers: StaticRef<RccRegisters>,

@@ -1,10 +1,24 @@
 /// PLL-related constants for specific for a specific chip
 pub trait PllConstants {
     /// PLL minimum frequency in MHz
-    const MIN_FREQ_MHZ: usize;
+    const MIN_FREQ_MHZ: usize = 12;
     /// PLL maximum frequency in MHz
     // All boards support PLL frequencies up to 48MHz
     const MAX_FREQ_MHZ: usize = 48;
+
+    const PLL_VCO_IN_MIN_MHZ: f32 = 2.66;
+    const PLL_VCO_IN_MAX_MHZ: f32 = 16.0;
+
+    const PLL_M_RANGE: core::ops::RangeInclusive<u8> = 1..=8;
+    const PLL_N_RANGE: core::ops::RangeInclusive<u16> = 6..=127;
+
+    const PLL_P_ALLOWED: core::ops::RangeInclusive<u8> = 2..=8;
+    const PLL_Q_ALLOWED: core::ops::RangeInclusive<u8> = 2..=8;
+    const PLL_R_ALLOWED: core::ops::RangeInclusive<u8> = 2..=32;
+
+    const PLL_P_MAX_MHZ: f32  = 62.0;
+    const PLL_QR_MAX_MHZ: f32 = 48.0;
+
 }
 
 /// Generic clock constants for a specific chip
