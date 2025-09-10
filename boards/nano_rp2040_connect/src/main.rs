@@ -41,10 +41,7 @@ use rp2040::sysinfo;
 
 mod flash_bootloader;
 
-/// Allocate memory for the stack
-#[no_mangle]
-#[link_section = ".stack_buffer"]
-static mut STACK_MEMORY: [u8; 0x1500] = [0; 0x1500];
+kernel::stack_size! {0x1500}
 
 // Manually setting the boot header section that contains the FCB header
 #[used]
@@ -169,7 +166,7 @@ pub unsafe extern "C" fn jump_to_bootloader() {
     ldmia r0!, {{r1, r2}}
     msr msp, r1
     bx r2
-    ",
+        "
     );
 }
 

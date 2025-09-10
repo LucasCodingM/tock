@@ -104,6 +104,7 @@ impl<'a, I: InterruptService + 'a> Stm32f3xx<'a, I> {
 impl<'a, I: InterruptService + 'a> Chip for Stm32f3xx<'a, I> {
     type MPU = cortexm4f::mpu::MPU;
     type UserspaceKernelBoundary = cortexm4f::syscall::SysCall;
+    type ThreadIdProvider = cortexm4f::thread_id::CortexMThreadIdProvider;
 
     fn service_pending_interrupts(&self) {
         unsafe {
@@ -137,11 +138,11 @@ impl<'a, I: InterruptService + 'a> Chip for Stm32f3xx<'a, I> {
         }
     }
 
-    unsafe fn atomic<F, R>(&self, f: F) -> R
+    unsafe fn with_interrupts_disabled<F, R>(&self, f: F) -> R
     where
         F: FnOnce() -> R,
     {
-        cortexm4f::support::atomic(f)
+        cortexm4f::support::with_interrupts_disabled(f)
     }
 
     unsafe fn print_state(&self, write: &mut dyn Write) {

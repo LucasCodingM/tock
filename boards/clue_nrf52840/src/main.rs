@@ -122,10 +122,7 @@ static mut CDC_REF_FOR_PANIC: Option<
 > = None;
 static mut NRF52_POWER: Option<&'static nrf52840::power::Power> = None;
 
-/// Dummy buffer that causes the linker to reserve enough space for the stack.
-#[no_mangle]
-#[link_section = ".stack_buffer"]
-static mut STACK_MEMORY: [u8; 0x1000] = [0; 0x1000];
+kernel::stack_size! {0x1000}
 
 // Function for the CDC/USB stack to use to enter the Adafruit nRF52 Bootloader
 fn baud_rate_reset_bootloader_enter() {
@@ -172,7 +169,7 @@ pub struct Platform {
         2,
     >,
     button: &'static capsules_core::button::Button<'static, nrf52::gpio::GPIOPin<'static>>,
-    screen: &'static capsules_extra::screen::Screen<'static>,
+    screen: &'static capsules_extra::screen::screen::Screen<'static>,
     rng: &'static RngDriver,
     ipc: kernel::ipc::IPC<{ NUM_PROCS as u8 }>,
     alarm: &'static capsules_core::alarm::AlarmDriver<
@@ -213,7 +210,7 @@ impl SyscallDriverLookup for Platform {
             capsules_core::led::DRIVER_NUM => f(Some(self.led)),
             capsules_core::button::DRIVER_NUM => f(Some(self.button)),
             capsules_core::adc::DRIVER_NUM => f(Some(self.adc)),
-            capsules_extra::screen::DRIVER_NUM => f(Some(self.screen)),
+            capsules_extra::screen::screen::DRIVER_NUM => f(Some(self.screen)),
             capsules_core::rng::DRIVER_NUM => f(Some(self.rng)),
             capsules_extra::ble_advertising_driver::DRIVER_NUM => f(Some(self.ble_radio)),
             capsules_extra::ieee802154::DRIVER_NUM => f(Some(self.ieee802154_radio)),
@@ -694,7 +691,7 @@ unsafe fn start() -> (
 
     let screen = components::screen::ScreenComponent::new(
         board_kernel,
-        capsules_extra::screen::DRIVER_NUM,
+        capsules_extra::screen::screen::DRIVER_NUM,
         tft,
         Some(tft),
     )

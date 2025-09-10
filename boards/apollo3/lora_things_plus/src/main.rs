@@ -113,10 +113,7 @@ static mut CCS811: Option<&'static capsules_extra::ccs811::Ccs811<'static>> = No
 #[cfg(feature = "atecc508a")]
 static mut ATECC508A: Option<&'static capsules_extra::atecc508a::Atecc508a<'static>> = None;
 
-/// Dummy buffer that causes the linker to reserve enough space for the stack.
-#[no_mangle]
-#[link_section = ".stack_buffer"]
-static mut STACK_MEMORY: [u8; 0x1000] = [0; 0x1000];
+kernel::stack_size! {0x1000}
 
 const LORA_SPI_DRIVER_NUM: usize = capsules_core::driver::NUM::LoRaPhySPI as usize;
 const LORA_GPIO_DRIVER_NUM: usize = capsules_core::driver::NUM::LoRaPhyGPIO as usize;
@@ -199,7 +196,7 @@ struct LoRaThingsPlus {
     systick: cortexm4::systick::SysTick,
     kv_driver: &'static capsules_extra::kv_driver::KVStoreDriver<
         'static,
-        capsules_extra::virtual_kv::VirtualKVPermissions<
+        capsules_extra::virtualizers::virtual_kv::VirtualKVPermissions<
             'static,
             capsules_extra::kv_store_permissions::KVStorePermissions<
                 'static,
@@ -775,7 +772,7 @@ unsafe fn setup() -> (
         capsules_extra::kv_driver::DRIVER_NUM,
     )
     .finalize(components::kv_driver_component_static!(
-        capsules_extra::virtual_kv::VirtualKVPermissions<
+        capsules_extra::virtualizers::virtual_kv::VirtualKVPermissions<
             capsules_extra::kv_store_permissions::KVStorePermissions<
                 capsules_extra::tickv_kv_store::TicKVKVStore<
                     capsules_extra::tickv::TicKVSystem<

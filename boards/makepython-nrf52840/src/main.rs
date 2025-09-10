@@ -84,10 +84,7 @@ static mut CDC_REF_FOR_PANIC: Option<
 > = None;
 static mut NRF52_POWER: Option<&'static nrf52840::power::Power> = None;
 
-/// Dummy buffer that causes the linker to reserve enough space for the stack.
-#[no_mangle]
-#[link_section = ".stack_buffer"]
-static mut STACK_MEMORY: [u8; 0x1000] = [0; 0x1000];
+kernel::stack_size! {0x1000}
 
 // Function for the CDC/USB stack to use to enter the bootloader.
 fn baud_rate_reset_bootloader_enter() {
@@ -172,7 +169,7 @@ impl SyscallDriverLookup for Platform {
             capsules_core::button::DRIVER_NUM => f(Some(self.button)),
             capsules_core::adc::DRIVER_NUM => f(Some(self.adc)),
             capsules_core::rng::DRIVER_NUM => f(Some(self.rng)),
-            capsules_extra::screen::DRIVER_NUM => f(Some(self.screen)),
+            capsules_extra::screen::screen::DRIVER_NUM => f(Some(self.screen)),
             capsules_extra::ble_advertising_driver::DRIVER_NUM => f(Some(self.ble_radio)),
             capsules_extra::ieee802154::DRIVER_NUM => f(Some(self.ieee802154_radio)),
             capsules_extra::net::udp::DRIVER_NUM => f(Some(self.udp_driver)),
@@ -513,30 +510,30 @@ pub unsafe fn start() -> (
     // Create a Driver for userspace access to the screen.
     // let screen = components::screen::ScreenComponent::new(
     //     board_kernel,
-    //     capsules_extra::screen::DRIVER_NUM,
+    //     capsules_extra::screen::screen::DRIVER_NUM,
     //     ssd1306,
     //     Some(ssd1306),
     // )
     // .finalize(components::screen_component_static!(1032));
 
     let apps_regions = static_init!(
-        [capsules_extra::screen_shared::AppScreenRegion; 3],
+        [capsules_extra::screen::screen_shared::AppScreenRegion; 3],
         [
-            capsules_extra::screen_shared::AppScreenRegion::new(
+            capsules_extra::screen::screen_shared::AppScreenRegion::new(
                 kernel::process::ShortId::Fixed(core::num::NonZeroU32::new(crc("circle")).unwrap()),
                 0,     // x
                 0,     // y
                 8 * 8, // width
                 8 * 8  // height
             ),
-            capsules_extra::screen_shared::AppScreenRegion::new(
+            capsules_extra::screen::screen_shared::AppScreenRegion::new(
                 kernel::process::ShortId::Fixed(core::num::NonZeroU32::new(crc("count")).unwrap()),
                 8 * 8, // x
                 0,     // y
                 8 * 8, // width
                 4 * 8  // height
             ),
-            capsules_extra::screen_shared::AppScreenRegion::new(
+            capsules_extra::screen::screen_shared::AppScreenRegion::new(
                 kernel::process::ShortId::Fixed(
                     core::num::NonZeroU32::new(crc("tock-scroll")).unwrap()
                 ),
@@ -550,7 +547,7 @@ pub unsafe fn start() -> (
 
     let screen = components::screen::ScreenSharedComponent::new(
         board_kernel,
-        capsules_extra::screen::DRIVER_NUM,
+        capsules_extra::screen::screen::DRIVER_NUM,
         ssd1306,
         apps_regions,
     )

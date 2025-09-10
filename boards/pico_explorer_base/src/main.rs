@@ -44,10 +44,7 @@ mod io;
 
 mod flash_bootloader;
 
-/// Allocate memory for the stack
-#[no_mangle]
-#[link_section = ".stack_buffer"]
-static mut STACK_MEMORY: [u8; 0x1500] = [0; 0x1500];
+kernel::stack_size! {0x1500}
 
 // Manually setting the boot header section that contains the FCB header
 #[used]
@@ -100,7 +97,7 @@ pub struct PicoExplorerBase {
         >,
     >,
     button: &'static capsules_core::button::Button<'static, RPGpioPin<'static>>,
-    screen: &'static capsules_extra::screen::Screen<'static>,
+    screen: &'static capsules_extra::screen::screen::Screen<'static>,
 
     scheduler: &'static RoundRobinSched<'static>,
     systick: cortexm0p::systick::SysTick,
@@ -121,7 +118,7 @@ impl SyscallDriverLookup for PicoExplorerBase {
             capsules_extra::temperature::DRIVER_NUM => f(Some(self.temperature)),
             capsules_extra::buzzer_driver::DRIVER_NUM => f(Some(self.buzzer_driver)),
             capsules_core::button::DRIVER_NUM => f(Some(self.button)),
-            capsules_extra::screen::DRIVER_NUM => f(Some(self.screen)),
+            capsules_extra::screen::screen::DRIVER_NUM => f(Some(self.screen)),
             _ => f(None),
         }
     }
@@ -181,7 +178,7 @@ pub unsafe extern "C" fn jump_to_bootloader() {
     ldmia r0!, {{r1, r2}}
     msr msp, r1
     bx r2
-    ",
+        "
     );
 }
 
@@ -524,7 +521,7 @@ pub unsafe fn start() -> (
 
     let screen = components::screen::ScreenComponent::new(
         board_kernel,
-        capsules_extra::screen::DRIVER_NUM,
+        capsules_extra::screen::screen::DRIVER_NUM,
         tft,
         Some(tft),
     )

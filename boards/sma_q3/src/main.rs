@@ -73,10 +73,7 @@ static mut CHIP: Option<&'static nrf52840::chip::NRF52<Nrf52840DefaultPeripheral
 static mut PROCESS_PRINTER: Option<&'static capsules_system::process_printer::ProcessPrinterText> =
     None;
 
-/// Dummy buffer that causes the linker to reserve enough space for the stack.
-#[no_mangle]
-#[link_section = ".stack_buffer"]
-static mut STACK_MEMORY: [u8; 0x1000] = [0; 0x1000];
+kernel::stack_size! {0x1000}
 
 type Bmp280Sensor = components::bmp280::Bmp280ComponentType<
     VirtualMuxAlarm<'static, nrf52840::rtc::Rtc<'static>>,
@@ -126,7 +123,7 @@ pub struct Platform {
             nrf52840::rtc::Rtc<'static>,
         >,
     >,
-    screen: &'static capsules_extra::screen::Screen<'static>,
+    screen: &'static capsules_extra::screen::screen::Screen<'static>,
     scheduler: &'static RoundRobinSched<'static>,
     systick: cortexm4::systick::SysTick,
 }
@@ -147,7 +144,7 @@ impl SyscallDriverLookup for Platform {
             capsules_extra::ieee802154::DRIVER_NUM => f(Some(self.ieee802154_radio)),
             capsules_extra::temperature::DRIVER_NUM => f(Some(self.temperature)),
             capsules_extra::analog_comparator::DRIVER_NUM => f(Some(self.analog_comparator)),
-            capsules_extra::screen::DRIVER_NUM => f(Some(self.screen)),
+            capsules_extra::screen::screen::DRIVER_NUM => f(Some(self.screen)),
             kernel::ipc::DRIVER_NUM => f(Some(&self.ipc)),
             _ => f(None),
         }
@@ -479,7 +476,7 @@ pub unsafe fn start() -> (
 
         let screen = components::screen::ScreenComponent::new(
             board_kernel,
-            capsules_extra::screen::DRIVER_NUM,
+            capsules_extra::screen::screen::DRIVER_NUM,
             display,
             None,
         )

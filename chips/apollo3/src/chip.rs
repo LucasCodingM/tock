@@ -95,6 +95,7 @@ impl kernel::platform::chip::InterruptService for Apollo3DefaultPeripherals {
 impl<I: InterruptService + 'static> Chip for Apollo3<I> {
     type MPU = cortexm4f::mpu::MPU;
     type UserspaceKernelBoundary = cortexm4f::syscall::SysCall;
+    type ThreadIdProvider = cortexm4f::thread_id::CortexMThreadIdProvider;
 
     fn service_pending_interrupts(&self) {
         unsafe {
@@ -129,11 +130,11 @@ impl<I: InterruptService + 'static> Chip for Apollo3<I> {
         }
     }
 
-    unsafe fn atomic<F, R>(&self, f: F) -> R
+    unsafe fn with_interrupts_disabled<F, R>(&self, f: F) -> R
     where
         F: FnOnce() -> R,
     {
-        cortexm4f::support::atomic(f)
+        cortexm4f::support::with_interrupts_disabled(f)
     }
 
     unsafe fn print_state(&self, write: &mut dyn Write) {
