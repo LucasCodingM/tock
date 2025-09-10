@@ -10,7 +10,6 @@ pub mod chip_specific;
 
 // Peripherals
 pub mod dbg;
-pub mod flash;
 pub mod rcc;
 pub mod clocks;
 

@@ -16,10 +16,10 @@ pub struct Stm32wl5x<'a, I: InterruptService + 'a> {
     interrupt_service: &'a I,
 }
 
-pub struct Stm32wl5xDefaultPeripherals<ChipSpecs> {
+/* pub struct Stm32wl5xDefaultPeripherals<ChipSpecs> {
     pub flash: crate::flash::Flash<ChipSpecs>
 
-}
+} */
 
 impl<'a, I: InterruptService + 'a> Stm32wl5x<'a, I> {
     pub unsafe fn new(interrupt_service: &'a I) -> Self {

@@ -5,3 +5,6 @@ pub mod registers;
 pub mod prescaler;
 pub mod serial_com;
 pub mod timers;
+pub mod analog;
+pub mod gpio;
+pub mod radio;
